@@ -1,0 +1,13 @@
+.snake-canvas {
+  border: 1px solid black;
+}
+
+.fake-canvas {
+  width: 600px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+}

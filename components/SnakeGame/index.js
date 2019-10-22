@@ -1,12 +1,19 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 
-const WIDTH = 500
-const HEIGHT = 500
+import './styles.css'
+
+const WIDTH = 600
+const HEIGHT = 600
 const SNAKE_SIZE = WIDTH / 30
 const FOOD_SIZE = SNAKE_SIZE / 2
-
-const CANVAS_ID = "canvas-snake"
+const DIRECTIONS = {
+  UP: [0, -SNAKE_SIZE],
+  RIGHT: [SNAKE_SIZE, 0],
+  DOWN: [0, SNAKE_SIZE],
+  LEFT: [-SNAKE_SIZE, 0],
+  NONE: [0, 0]
+}
 
 export default class SnakeGame extends Component {
   constructor(props) {
@@ -15,10 +22,11 @@ export default class SnakeGame extends Component {
     this.canvasRef = React.createRef()
 
     this.state = {
-      direction: [0, SNAKE_SIZE],
-      snake: [[WIDTH / 2, HEIGHT / 2]],
+      direction: DIRECTIONS.NONE,
+      snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
       food: [100 + FOOD_SIZE / 2, 100 + FOOD_SIZE / 2],
-      isGameOver: false,
+      isGameStarted: false,
+      isGameOver: false
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -32,23 +40,23 @@ export default class SnakeGame extends Component {
 
   componentDidUpdate() {
     this.drawCanvas()
-    console.log(this.state.snake)
 
-    this.checkGameOver()
-    if (this.state.isGameOver) {
-      shouldMove = false
+    if (this.isGameOver()) {
+      if (this.state.isGameOver) {
+        return
+      }
+      this.setState({isGameOver: true})
+      return
     }
 
-    let shouldMove = true;
     if (this.isFoodEaten()) {
+      this.props.handleScore()
       this.setState({food: this.generateFood(), snake: this.addSegment()})
-      shouldMove = false
+      return
     }
 
     clearTimeout(this.timeout)
-    if (shouldMove) {
-      this.timeout = setTimeout(() => this.moveSnake(), 200)
-    }
+    this.timeout = setTimeout(() => this.moveSnake(), 100)
   }
 
   componentWillUnmount() {
@@ -57,71 +65,105 @@ export default class SnakeGame extends Component {
   }
 
   handleKeyDown(e) {
+    this.setState({isGameStarted: true})
     switch (e.key) {
       case 'ArrowUp':
-        this.setState({direction: [0, -SNAKE_SIZE]})
+        this.setState({direction: DIRECTIONS.UP})
         break
       case 'ArrowDown':
-        this.setState({direction: [0, SNAKE_SIZE]})
+        this.setState({direction: DIRECTIONS.DOWN})
         break
       case 'ArrowLeft':
-        this.setState({direction: [-SNAKE_SIZE, 0]})
+        this.setState({direction: DIRECTIONS.LEFT})
         break
       case 'ArrowRight':
-        this.setState({direction: [SNAKE_SIZE, 0]})
+        this.setState({direction: DIRECTIONS.RIGHT})
+        break
+      case 'r':
+        this.restart()
         break
       default:
         return
     }
   }
 
-  checkGameOver() {
-    let eqObj = {}
-    let isGameOver = false
-    for (const segment of this.state.snake) {
-      let key = `${segment[0]}${segment[1]}`
-      if (eqObj.hasOwnProperty(key)) {
-        isGameOver = true
-      } else {
-        eqObj[key] = true
-      }
+  isOverlapping(segment1, segment2, size1, size2) {
+    const l1 = {
+      x: segment1[0],
+      y: segment1[1]
+    }
+    const r1 = {
+      x: segment1[0] + size1,
+      y: segment1[1] + size1
+    }
+    const l2 = {
+      x: segment2[0],
+      y: segment2[1]
+    }
+    const r2 = {
+      x: segment2[0] + size2,
+      y: segment2[1] + size2
     }
 
-    if (isGameOver === true) {
-      console.log("Game over")
-      //this.setState({isGameOver})
-    }
+    if (l1.x >= r2.x || l2.x >= r1.x) return false
+    if (l1.y >= r2.y || l2.y >= r1.y) return false
+
+    return true
   }
 
-  isFoodEaten() {
-    const { food, snake } = this.state;
-    console.log(food, snake)
-    return snake.some(segment => {
-      const xdif = food[0] - segment[0]
-      const ydif = food[1] - segment[1]
-      return xdif <= SNAKE_SIZE &&
-              xdif >= 0 &&
-              ydif <= SNAKE_SIZE &&
-              ydif >= 0
+  restart() {
+    this.setState({
+      direction: DIRECTIONS.NONE,
+      snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
+      food: [100 + FOOD_SIZE / 2, 100 + FOOD_SIZE / 2],
+      isGameStarted: false,
+      isGameOver: false
     })
   }
 
+  isSnakeOutOfBounds() {
+    const head = this.state.snake[0]
+    return head[0] < 0 || head[0] > WIDTH || head[1] < 0 || head[1] > HEIGHT
+  }
+
+  isGameOver() {
+    if (this.isSnakeOutOfBounds()) {
+      return true
+    }
+
+    const snake = this.state.snake
+    if (snake.length <= 2) {
+      return
+    }
+    const head = snake[0]
+    const body = snake.slice(1, snake.length)
+
+    return body.some(segment => this.isOverlapping(head, segment, SNAKE_SIZE, SNAKE_SIZE))
+  }
+
+  isFoodEaten() {
+    const { food, snake } = this.state
+    const head = snake[0]
+    return this.isOverlapping(head, food, SNAKE_SIZE, FOOD_SIZE)
+  }
+
   generateFood() {
-    const x = Math.trunc(Math.random() * WIDTH + FOOD_SIZE / 2)
-    const y = Math.trunc(Math.random() * HEIGHT + FOOD_SIZE / 2)
+    const x = Math.trunc(Math.random() * (WIDTH - FOOD_SIZE * 2) + FOOD_SIZE)
+    const y = Math.trunc(Math.random() * (HEIGHT - FOOD_SIZE * 2) + FOOD_SIZE)
     return [x, y]
   }
 
   addSegment() {
     const snake = this.state.snake
     const newSegment = snake[snake.length - 1]
-    return snake.concat(newSegment)
+    snake.push(newSegment)
+    return snake
   }
 
   moveSnake() {
     const { snake, direction } = this.state
-    let newSnake = [];
-    let prevSegment;
+    let newSnake = []
+    let prevSegment
     snake.forEach(segment => {
       if (!prevSegment) {
         prevSegment = segment
@@ -161,11 +203,19 @@ export default class SnakeGame extends Component {
   }
 
   render() {
-      return (
-        <>
-          <h1>SNAKEE</h1>
-          <canvas id={CANVAS_ID} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
-        </>
-      )
+    const startMessageStyle = this.state.isGameStarted ? 'none' : 'flex'
+    const gameOverMessageStyle = this.state.isGameOver ? 'flex' : 'none'
+    return (
+      <>
+        <div className="fake-canvas" style={{display: startMessageStyle}}>
+          <h2>Press any arrow key to start the game</h2>
+        </div>
+        <div className="fake-canvas" style={{display: gameOverMessageStyle}}>
+          <h2>GAME OVER</h2>
+          <h4>Press 'r' to restart</h4>
+        </div>
+        <canvas className={'snake-canvas'} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
+      </>
+    )
   }
 }

@@ -31985,7 +31985,79 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"node_modules/react-dom/cjs/react-dom.development.js"}],"components/SnakeGame/index.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"node_modules/react-dom/cjs/react-dom.development.js"}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
+
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"components/SnakeGame/styles.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/SnakeGame/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31996,6 +32068,8 @@ exports.default = void 0;
 var _react = _interopRequireWildcard(require("react"));
 
 var _reactDom = require("react-dom");
+
+require("./styles.css");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -32019,11 +32093,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var WIDTH = 500;
-var HEIGHT = 500;
+var WIDTH = 600;
+var HEIGHT = 600;
 var SNAKE_SIZE = WIDTH / 30;
 var FOOD_SIZE = SNAKE_SIZE / 2;
-var CANVAS_ID = "canvas-snake";
+var DIRECTIONS = {
+  UP: [0, -SNAKE_SIZE],
+  RIGHT: [SNAKE_SIZE, 0],
+  DOWN: [0, SNAKE_SIZE],
+  LEFT: [-SNAKE_SIZE, 0],
+  NONE: [0, 0]
+};
 
 var SnakeGame =
 /*#__PURE__*/
@@ -32038,9 +32118,10 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(SnakeGame).call(this, props));
     _this.canvasRef = _react.default.createRef();
     _this.state = {
-      direction: [0, SNAKE_SIZE],
-      snake: [[WIDTH / 2, HEIGHT / 2]],
+      direction: DIRECTIONS.NONE,
+      snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
       food: [100 + FOOD_SIZE / 2, 100 + FOOD_SIZE / 2],
+      isGameStarted: false,
       isGameOver: false
     };
     _this.handleKeyDown = _this.handleKeyDown.bind(_assertThisInitialized(_this));
@@ -32060,30 +32141,31 @@ function (_Component) {
       var _this2 = this;
 
       this.drawCanvas();
-      console.log(this.state.snake);
-      this.checkGameOver();
 
-      if (this.state.isGameOver) {
-        shouldMove = false;
+      if (this.isGameOver()) {
+        if (this.state.isGameOver) {
+          return;
+        }
+
+        this.setState({
+          isGameOver: true
+        });
+        return;
       }
 
-      var shouldMove = true;
-
       if (this.isFoodEaten()) {
+        this.props.handleScore();
         this.setState({
           food: this.generateFood(),
           snake: this.addSegment()
         });
-        shouldMove = false;
+        return;
       }
 
       clearTimeout(this.timeout);
-
-      if (shouldMove) {
-        this.timeout = setTimeout(function () {
-          return _this2.moveSnake();
-        }, 200);
-      }
+      this.timeout = setTimeout(function () {
+        return _this2.moveSnake();
+      }, 100);
     }
   }, {
     key: "componentWillUnmount",
@@ -32094,29 +32176,37 @@ function (_Component) {
   }, {
     key: "handleKeyDown",
     value: function handleKeyDown(e) {
+      this.setState({
+        isGameStarted: true
+      });
+
       switch (e.key) {
         case 'ArrowUp':
           this.setState({
-            direction: [0, -SNAKE_SIZE]
+            direction: DIRECTIONS.UP
           });
           break;
 
         case 'ArrowDown':
           this.setState({
-            direction: [0, SNAKE_SIZE]
+            direction: DIRECTIONS.DOWN
           });
           break;
 
         case 'ArrowLeft':
           this.setState({
-            direction: [-SNAKE_SIZE, 0]
+            direction: DIRECTIONS.LEFT
           });
           break;
 
         case 'ArrowRight':
           this.setState({
-            direction: [SNAKE_SIZE, 0]
+            direction: DIRECTIONS.RIGHT
           });
+          break;
+
+        case 'r':
+          this.restart();
           break;
 
         default:
@@ -32124,43 +32214,65 @@ function (_Component) {
       }
     }
   }, {
-    key: "checkGameOver",
-    value: function checkGameOver() {
-      var eqObj = {};
-      var isGameOver = false;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+    key: "isOverlapping",
+    value: function isOverlapping(segment1, segment2, size1, size2) {
+      var l1 = {
+        x: segment1[0],
+        y: segment1[1]
+      };
+      var r1 = {
+        x: segment1[0] + size1,
+        y: segment1[1] + size1
+      };
+      var l2 = {
+        x: segment2[0],
+        y: segment2[1]
+      };
+      var r2 = {
+        x: segment2[0] + size2,
+        y: segment2[1] + size2
+      };
+      if (l1.x >= r2.x || l2.x >= r1.x) return false;
+      if (l1.y >= r2.y || l2.y >= r1.y) return false;
+      return true;
+    }
+  }, {
+    key: "restart",
+    value: function restart() {
+      this.setState({
+        direction: DIRECTIONS.NONE,
+        snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
+        food: [100 + FOOD_SIZE / 2, 100 + FOOD_SIZE / 2],
+        isGameStarted: false,
+        isGameOver: false
+      });
+    }
+  }, {
+    key: "isSnakeOutOfBounds",
+    value: function isSnakeOutOfBounds() {
+      var head = this.state.snake[0];
+      return head[0] < 0 || head[0] > WIDTH || head[1] < 0 || head[1] > HEIGHT;
+    }
+  }, {
+    key: "isGameOver",
+    value: function isGameOver() {
+      var _this3 = this;
 
-      try {
-        for (var _iterator = this.state.snake[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var segment = _step.value;
-          var key = "".concat(segment[0]).concat(segment[1]);
-
-          if (eqObj.hasOwnProperty(key)) {
-            isGameOver = true;
-          } else {
-            eqObj[key] = true;
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+      if (this.isSnakeOutOfBounds()) {
+        return true;
       }
 
-      if (isGameOver === true) {
-        console.log("Game over"); //this.setState({isGameOver})
+      var snake = this.state.snake;
+
+      if (snake.length <= 2) {
+        return;
       }
+
+      var head = snake[0];
+      var body = snake.slice(1, snake.length);
+      return body.some(function (segment) {
+        return _this3.isOverlapping(head, segment, SNAKE_SIZE, SNAKE_SIZE);
+      });
     }
   }, {
     key: "isFoodEaten",
@@ -32168,18 +32280,14 @@ function (_Component) {
       var _this$state = this.state,
           food = _this$state.food,
           snake = _this$state.snake;
-      console.log(food, snake);
-      return snake.some(function (segment) {
-        var xdif = food[0] - segment[0];
-        var ydif = food[1] - segment[1];
-        return xdif <= SNAKE_SIZE && xdif >= 0 && ydif <= SNAKE_SIZE && ydif >= 0;
-      });
+      var head = snake[0];
+      return this.isOverlapping(head, food, SNAKE_SIZE, FOOD_SIZE);
     }
   }, {
     key: "generateFood",
     value: function generateFood() {
-      var x = Math.trunc(Math.random() * WIDTH + FOOD_SIZE / 2);
-      var y = Math.trunc(Math.random() * HEIGHT + FOOD_SIZE / 2);
+      var x = Math.trunc(Math.random() * (WIDTH - FOOD_SIZE * 2) + FOOD_SIZE);
+      var y = Math.trunc(Math.random() * (HEIGHT - FOOD_SIZE * 2) + FOOD_SIZE);
       return [x, y];
     }
   }, {
@@ -32187,7 +32295,8 @@ function (_Component) {
     value: function addSegment() {
       var snake = this.state.snake;
       var newSegment = snake[snake.length - 1];
-      return snake.concat(newSegment);
+      snake.push(newSegment);
+      return snake;
     }
   }, {
     key: "moveSnake",
@@ -32224,10 +32333,10 @@ function (_Component) {
   }, {
     key: "drawSnake",
     value: function drawSnake(ctx) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.state.snake.forEach(function (segment) {
-        _this3.drawRect(segment[0], segment[1], SNAKE_SIZE, "black", ctx);
+        _this4.drawRect(segment[0], segment[1], SNAKE_SIZE, "black", ctx);
       });
     }
   }, {
@@ -32245,8 +32354,20 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("h1", null, "SNAKEE"), _react.default.createElement("canvas", {
-        id: CANVAS_ID,
+      var startMessageStyle = this.state.isGameStarted ? 'none' : 'flex';
+      var gameOverMessageStyle = this.state.isGameOver ? 'flex' : 'none';
+      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", {
+        className: "fake-canvas",
+        style: {
+          display: startMessageStyle
+        }
+      }, _react.default.createElement("h2", null, "Press any arrow key to start the game")), _react.default.createElement("div", {
+        className: "fake-canvas",
+        style: {
+          display: gameOverMessageStyle
+        }
+      }, _react.default.createElement("h2", null, "GAME OVER"), _react.default.createElement("h4", null, "Press 'r' to restart")), _react.default.createElement("canvas", {
+        className: 'snake-canvas',
         ref: this.canvasRef,
         width: WIDTH,
         height: HEIGHT
@@ -32258,10 +32379,10 @@ function (_Component) {
 }(_react.Component);
 
 exports.default = SnakeGame;
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./styles.css":"components/SnakeGame/styles.css"}],"index.js":[function(require,module,exports) {
 "use strict";
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _reactDom = require("react-dom");
 
@@ -32269,8 +32390,31 @@ var _index = _interopRequireDefault(require("./components/SnakeGame/index.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var App = function App() {
-  return _react.default.createElement("div", null, _react.default.createElement("h1", null, "EVENT NAME"), _react.default.createElement("p", null, "Some description"), _react.default.createElement(_index.default, null));
+  var _useState = (0, _react.useState)(1),
+      _useState2 = _slicedToArray(_useState, 2),
+      score = _useState2[0],
+      setScore = _useState2[1];
+
+  var incrementScore = function incrementScore() {
+    return setScore(score + 1);
+  };
+
+  return _react.default.createElement("div", null, _react.default.createElement("h1", null, "EVENT NAME"), _react.default.createElement("p", null, "Some description"), _react.default.createElement("h2", null, "Score: ", score), _react.default.createElement(_index.default, {
+    handleScore: incrementScore
+  }));
 };
 
 (0, _reactDom.render)(_react.default.createElement(App, null), document.getElementById('root'));
@@ -32302,7 +32446,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55406" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54699" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
