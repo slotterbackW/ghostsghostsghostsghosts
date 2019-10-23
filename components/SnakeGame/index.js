@@ -3,8 +3,8 @@ import { render } from 'react-dom'
 
 import './styles.css'
 
-const WIDTH = 600
-const HEIGHT = 600
+const WIDTH = 360
+const HEIGHT = 360
 const SNAKE_SIZE = WIDTH / 30
 const FOOD_SIZE = SNAKE_SIZE / 2
 const DIRECTIONS = {
@@ -50,7 +50,7 @@ export default class SnakeGame extends Component {
     }
 
     if (this.isFoodEaten()) {
-      this.props.handleScore()
+      this.props.incrementScore()
       this.setState({food: this.generateFood(), snake: this.addSegment()})
       return
     }
@@ -65,19 +65,28 @@ export default class SnakeGame extends Component {
   }
 
   handleKeyDown(e) {
+    const direction = this.state.direction
     this.setState({isGameStarted: true})
     switch (e.key) {
       case 'ArrowUp':
-        this.setState({direction: DIRECTIONS.UP})
+        if (direction !== DIRECTIONS.DOWN) {
+          this.setState({direction: DIRECTIONS.UP})
+        }
         break
       case 'ArrowDown':
-        this.setState({direction: DIRECTIONS.DOWN})
+        if (direction !== DIRECTIONS.UP) {
+          this.setState({direction: DIRECTIONS.DOWN})
+        }
         break
       case 'ArrowLeft':
-        this.setState({direction: DIRECTIONS.LEFT})
+        if (direction !== DIRECTIONS.RIGHT) {
+          this.setState({direction: DIRECTIONS.LEFT})
+        }
         break
       case 'ArrowRight':
-        this.setState({direction: DIRECTIONS.RIGHT})
+        if (direction !== DIRECTIONS.LEFT) {
+          this.setState({direction: DIRECTIONS.RIGHT})
+        }
         break
       case 'r':
         this.restart()
@@ -112,6 +121,7 @@ export default class SnakeGame extends Component {
   }
 
   restart() {
+    this.props.setScore(1)
     this.setState({
       direction: DIRECTIONS.NONE,
       snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
@@ -194,7 +204,7 @@ export default class SnakeGame extends Component {
 
   drawFood(ctx) {
     const food = this.state.food
-    this.drawRect(food[0], food[1], FOOD_SIZE, "red", ctx)
+    this.drawRect(food[0], food[1], FOOD_SIZE, "#ff7518", ctx)
   }
 
   drawRect(x, y, size, color, ctx) {
@@ -203,17 +213,25 @@ export default class SnakeGame extends Component {
   }
 
   render() {
-    const startMessageStyle = this.state.isGameStarted ? 'none' : 'flex'
-    const gameOverMessageStyle = this.state.isGameOver ? 'flex' : 'none'
+    const { isGameStarted, isGameOver } = this.state
+    const divStyle = {
+      height: `${HEIGHT}px`,
+      width: `${WIDTH}px`
+    }
+
     return (
       <>
-        <div className="fake-canvas" style={{display: startMessageStyle}}>
-          <h2>Press any arrow key to start the game</h2>
-        </div>
-        <div className="fake-canvas" style={{display: gameOverMessageStyle}}>
-          <h2>GAME OVER</h2>
-          <h4>Press 'r' to restart</h4>
-        </div>
+        {!isGameStarted &&
+          <div className="fake-canvas" style={divStyle}>
+            <h3>Press any arrow key to start the game</h3>
+          </div>
+        }
+        {isGameOver &&
+          <div className="fake-canvas" style={divStyle}>
+            <h3>GAME OVER</h3>
+            <h4>Press 'r' to restart</h4>
+          </div>
+        }
         <canvas className={'snake-canvas'} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
       </>
     )

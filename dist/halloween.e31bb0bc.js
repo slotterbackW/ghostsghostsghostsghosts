@@ -32052,7 +32052,12 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"components/SnakeGame/styles.css":[function(require,module,exports) {
+},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"index.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/SnakeGame/styles.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -32093,8 +32098,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var WIDTH = 600;
-var HEIGHT = 600;
+var WIDTH = 360;
+var HEIGHT = 360;
 var SNAKE_SIZE = WIDTH / 30;
 var FOOD_SIZE = SNAKE_SIZE / 2;
 var DIRECTIONS = {
@@ -32154,7 +32159,7 @@ function (_Component) {
       }
 
       if (this.isFoodEaten()) {
-        this.props.handleScore();
+        this.props.incrementScore();
         this.setState({
           food: this.generateFood(),
           snake: this.addSegment()
@@ -32176,33 +32181,46 @@ function (_Component) {
   }, {
     key: "handleKeyDown",
     value: function handleKeyDown(e) {
+      var direction = this.state.direction;
       this.setState({
         isGameStarted: true
       });
 
       switch (e.key) {
         case 'ArrowUp':
-          this.setState({
-            direction: DIRECTIONS.UP
-          });
+          if (direction !== DIRECTIONS.DOWN) {
+            this.setState({
+              direction: DIRECTIONS.UP
+            });
+          }
+
           break;
 
         case 'ArrowDown':
-          this.setState({
-            direction: DIRECTIONS.DOWN
-          });
+          if (direction !== DIRECTIONS.UP) {
+            this.setState({
+              direction: DIRECTIONS.DOWN
+            });
+          }
+
           break;
 
         case 'ArrowLeft':
-          this.setState({
-            direction: DIRECTIONS.LEFT
-          });
+          if (direction !== DIRECTIONS.RIGHT) {
+            this.setState({
+              direction: DIRECTIONS.LEFT
+            });
+          }
+
           break;
 
         case 'ArrowRight':
-          this.setState({
-            direction: DIRECTIONS.RIGHT
-          });
+          if (direction !== DIRECTIONS.LEFT) {
+            this.setState({
+              direction: DIRECTIONS.RIGHT
+            });
+          }
+
           break;
 
         case 'r':
@@ -32239,6 +32257,7 @@ function (_Component) {
   }, {
     key: "restart",
     value: function restart() {
+      this.props.setScore(1);
       this.setState({
         direction: DIRECTIONS.NONE,
         snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
@@ -32343,7 +32362,7 @@ function (_Component) {
     key: "drawFood",
     value: function drawFood(ctx) {
       var food = this.state.food;
-      this.drawRect(food[0], food[1], FOOD_SIZE, "red", ctx);
+      this.drawRect(food[0], food[1], FOOD_SIZE, "#ff7518", ctx);
     }
   }, {
     key: "drawRect",
@@ -32354,19 +32373,20 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var startMessageStyle = this.state.isGameStarted ? 'none' : 'flex';
-      var gameOverMessageStyle = this.state.isGameOver ? 'flex' : 'none';
-      return _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", {
+      var _this$state3 = this.state,
+          isGameStarted = _this$state3.isGameStarted,
+          isGameOver = _this$state3.isGameOver;
+      var divStyle = {
+        height: "".concat(HEIGHT, "px"),
+        width: "".concat(WIDTH, "px")
+      };
+      return _react.default.createElement(_react.default.Fragment, null, !isGameStarted && _react.default.createElement("div", {
         className: "fake-canvas",
-        style: {
-          display: startMessageStyle
-        }
-      }, _react.default.createElement("h2", null, "Press any arrow key to start the game")), _react.default.createElement("div", {
+        style: divStyle
+      }, _react.default.createElement("h3", null, "Press any arrow key to start the game")), isGameOver && _react.default.createElement("div", {
         className: "fake-canvas",
-        style: {
-          display: gameOverMessageStyle
-        }
-      }, _react.default.createElement("h2", null, "GAME OVER"), _react.default.createElement("h4", null, "Press 'r' to restart")), _react.default.createElement("canvas", {
+        style: divStyle
+      }, _react.default.createElement("h3", null, "GAME OVER"), _react.default.createElement("h4", null, "Press 'r' to restart")), _react.default.createElement("canvas", {
         className: 'snake-canvas',
         ref: this.canvasRef,
         width: WIDTH,
@@ -32386,7 +32406,9 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _reactDom = require("react-dom");
 
-var _index = _interopRequireDefault(require("./components/SnakeGame/index.js"));
+require("./index.css");
+
+var _index2 = _interopRequireDefault(require("./components/SnakeGame/index.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32412,13 +32434,24 @@ var App = function App() {
     return setScore(score + 1);
   };
 
-  return _react.default.createElement("div", null, _react.default.createElement("h1", null, "EVENT NAME"), _react.default.createElement("p", null, "Some description"), _react.default.createElement("h2", null, "Score: ", score), _react.default.createElement(_index.default, {
-    handleScore: incrementScore
-  }));
+  var handleScore = function handleScore(s) {
+    return setScore(s);
+  };
+
+  return _react.default.createElement("div", {
+    className: "page"
+  }, _react.default.createElement("h1", null, "GHOSTS GHOSTS GHOSTS GHOSTS"), _react.default.createElement("p", null, "Some description"), _react.default.createElement("div", {
+    className: "snake-container"
+  }, _react.default.createElement("h2", null, "Score: ", score), _react.default.createElement(_index2.default, {
+    setScore: handleScore,
+    incrementScore: incrementScore
+  })), _react.default.createElement("div", {
+    className: "hint-container"
+  }, score < 10 && _react.default.createElement("p", null, "You must score at least 10 points to find out the date"), score >= 10 && score < 20 && _react.default.createElement("p", null, "The event will be held on [TBD]. Score 20 points to find out the time"), score >= 20 && score < 30 && _react.default.createElement("p", null, "The event will start at [TBD]. Score 30 points to...")), _react.default.createElement("h1", null, "Photo Gallery"), _react.default.createElement("p", null, "Here's some spoooky inspiration"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("p", null, "..."));
 };
 
 (0, _reactDom.render)(_react.default.createElement(App, null), document.getElementById('root'));
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./components/SnakeGame/index.js":"components/SnakeGame/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./index.css":"index.css","./components/SnakeGame/index.js":"components/SnakeGame/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32446,7 +32479,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54699" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54765" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
