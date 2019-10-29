@@ -3,8 +3,8 @@ import { render } from 'react-dom'
 
 import './styles.css'
 
-const WIDTH = 360
-const HEIGHT = 360
+const WIDTH = 320
+const HEIGHT = 320
 const SNAKE_SIZE = WIDTH / 30
 const FOOD_SIZE = SNAKE_SIZE / 2
 const DIRECTIONS = {
@@ -26,7 +26,8 @@ export default class SnakeGame extends Component {
       snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
       food: [100 + FOOD_SIZE / 2, 100 + FOOD_SIZE / 2],
       isGameStarted: false,
-      isGameOver: false
+      isGameOver: false,
+      isMobile: null,
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this)
@@ -34,6 +35,10 @@ export default class SnakeGame extends Component {
   }
 
   componentDidMount() {
+    const isMobile = this.state.isMobile
+    if (isMobile === null) {
+      this.setState({isMobile: window.innerWidth <= 1024})
+    }
     document.addEventListener("keydown", this.handleKeyDown)
     this.drawCanvas()
   }
@@ -64,29 +69,52 @@ export default class SnakeGame extends Component {
     clearTimeout(this.timeout)
   }
 
-  handleKeyDown(e) {
+  moveUp() {
     const direction = this.state.direction
+    if (direction !== DIRECTIONS.DOWN) {
+      this.setState({direction: DIRECTIONS.UP})
+    }
+  }
+
+  moveDown() {
+    const direction = this.state.direction
+    if (direction !== DIRECTIONS.UP) {
+      this.setState({direction: DIRECTIONS.DOWN})
+    }
+  }
+
+  moveRight() {
+    const direction = this.state.direction
+    if (direction !== DIRECTIONS.LEFT) {
+      this.setState({direction: DIRECTIONS.RIGHT})
+    }
+  }
+
+  moveLeft() {
+    const direction = this.state.direction
+    if (direction !== DIRECTIONS.RIGHT) {
+      this.setState({direction: DIRECTIONS.LEFT})
+    }
+  }
+
+  handleKeyDown(e) {
     this.setState({isGameStarted: true})
     switch (e.key) {
       case 'ArrowUp':
-        if (direction !== DIRECTIONS.DOWN) {
-          this.setState({direction: DIRECTIONS.UP})
-        }
+        e.preventDefault()
+        this.moveUp()
         break
       case 'ArrowDown':
-        if (direction !== DIRECTIONS.UP) {
-          this.setState({direction: DIRECTIONS.DOWN})
-        }
+        e.preventDefault()
+        this.moveDown()
         break
       case 'ArrowLeft':
-        if (direction !== DIRECTIONS.RIGHT) {
-          this.setState({direction: DIRECTIONS.LEFT})
-        }
+        e.preventDefault()
+        this.moveLeft()
         break
       case 'ArrowRight':
-        if (direction !== DIRECTIONS.LEFT) {
-          this.setState({direction: DIRECTIONS.RIGHT})
-        }
+        e.preventDefault()
+        this.moveRight()
         break
       case 'r':
         this.restart()
@@ -213,7 +241,7 @@ export default class SnakeGame extends Component {
   }
 
   render() {
-    const { isGameStarted, isGameOver } = this.state
+    const { isGameStarted, isGameOver, isMobile } = this.state
     const divStyle = {
       height: `${HEIGHT}px`,
       width: `${WIDTH}px`
@@ -223,16 +251,38 @@ export default class SnakeGame extends Component {
       <>
         {!isGameStarted &&
           <div className="fake-canvas" style={divStyle}>
-            <h3>Press any arrow key to start the game</h3>
+            <h3>{isMobile ? '' : 'Press any arrow key to start the game'}</h3>
           </div>
         }
         {isGameOver &&
           <div className="fake-canvas" style={divStyle}>
             <h3>GAME OVER</h3>
-            <h4>Press 'r' to restart</h4>
+            <h4>{isMobile ? '' : 'Press \'r\' to restart'}</h4>
           </div>
         }
         <canvas className={'snake-canvas'} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
+        {isMobile &&
+          <div>
+            <div className="touch-control-container">
+              <div className="touch-controls">
+                <div>
+                  <button className="touch-button button-left" onClick={() => this.moveUp()}>Up</button>
+                </div>
+                <div>
+                  <button className="touch-button button-left" onClick={() => this.moveLeft()}>Left</button>
+                  <button className="touch-button">&nbsp;</button>
+                  <button className="touch-button button-left" onClick={() => this.moveRight()}>Right</button>
+                </div>
+                <div>
+                <button className="touch-button button-left" onClick={() => this.moveDown()}>Down</button>
+                </div>
+              </div>
+            </div>
+            <div className="bottom-buttons-container">
+              <button className="restart-button" onClick={() => this.restart()}>Restart</button>
+            </div>
+          </div>
+        }
       </>
     )
   }

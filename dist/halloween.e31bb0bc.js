@@ -32057,7 +32057,13 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"components/SnakeGame/styles.css":[function(require,module,exports) {
+},{"_css_loader":"node_modules/parcel-bundler/src/builtins/css-loader.js"}],"images/difference.png":[function(require,module,exports) {
+module.exports = "/difference.e34d4309.png";
+},{}],"images/ella1.JPG":[function(require,module,exports) {
+module.exports = "/ella1.3a0344a7.JPG";
+},{}],"images/ella2.JPG":[function(require,module,exports) {
+module.exports = "/ella2.0949be06.JPG";
+},{}],"components/SnakeGame/styles.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -32098,8 +32104,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var WIDTH = 360;
-var HEIGHT = 360;
+var WIDTH = 320;
+var HEIGHT = 320;
 var SNAKE_SIZE = WIDTH / 30;
 var FOOD_SIZE = SNAKE_SIZE / 2;
 var DIRECTIONS = {
@@ -32127,7 +32133,8 @@ function (_Component) {
       snake: [[WIDTH / 2, HEIGHT / 2 - 50]],
       food: [100 + FOOD_SIZE / 2, 100 + FOOD_SIZE / 2],
       isGameStarted: false,
-      isGameOver: false
+      isGameOver: false,
+      isMobile: null
     };
     _this.handleKeyDown = _this.handleKeyDown.bind(_assertThisInitialized(_this));
     _this.moveSnake = _this.moveSnake.bind(_assertThisInitialized(_this));
@@ -32137,6 +32144,14 @@ function (_Component) {
   _createClass(SnakeGame, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var isMobile = this.state.isMobile;
+
+      if (isMobile === null) {
+        this.setState({
+          isMobile: window.innerWidth <= 1024
+        });
+      }
+
       document.addEventListener("keydown", this.handleKeyDown);
       this.drawCanvas();
     }
@@ -32179,48 +32194,75 @@ function (_Component) {
       clearTimeout(this.timeout);
     }
   }, {
+    key: "moveUp",
+    value: function moveUp() {
+      var direction = this.state.direction;
+
+      if (direction !== DIRECTIONS.DOWN) {
+        this.setState({
+          direction: DIRECTIONS.UP
+        });
+      }
+    }
+  }, {
+    key: "moveDown",
+    value: function moveDown() {
+      var direction = this.state.direction;
+
+      if (direction !== DIRECTIONS.UP) {
+        this.setState({
+          direction: DIRECTIONS.DOWN
+        });
+      }
+    }
+  }, {
+    key: "moveRight",
+    value: function moveRight() {
+      var direction = this.state.direction;
+
+      if (direction !== DIRECTIONS.LEFT) {
+        this.setState({
+          direction: DIRECTIONS.RIGHT
+        });
+      }
+    }
+  }, {
+    key: "moveLeft",
+    value: function moveLeft() {
+      var direction = this.state.direction;
+
+      if (direction !== DIRECTIONS.RIGHT) {
+        this.setState({
+          direction: DIRECTIONS.LEFT
+        });
+      }
+    }
+  }, {
     key: "handleKeyDown",
     value: function handleKeyDown(e) {
-      var direction = this.state.direction;
       this.setState({
         isGameStarted: true
       });
 
       switch (e.key) {
         case 'ArrowUp':
-          if (direction !== DIRECTIONS.DOWN) {
-            this.setState({
-              direction: DIRECTIONS.UP
-            });
-          }
-
+          e.preventDefault();
+          this.moveUp();
           break;
 
         case 'ArrowDown':
-          if (direction !== DIRECTIONS.UP) {
-            this.setState({
-              direction: DIRECTIONS.DOWN
-            });
-          }
-
+          e.preventDefault();
+          this.moveDown();
           break;
 
         case 'ArrowLeft':
-          if (direction !== DIRECTIONS.RIGHT) {
-            this.setState({
-              direction: DIRECTIONS.LEFT
-            });
-          }
-
+          e.preventDefault();
+          this.moveLeft();
           break;
 
         case 'ArrowRight':
-          if (direction !== DIRECTIONS.LEFT) {
-            this.setState({
-              direction: DIRECTIONS.RIGHT
-            });
-          }
-
+          e.preventDefault();
+          this.moveRight();
           break;
 
         case 'r':
@@ -32373,9 +32415,12 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this5 = this;
+
       var _this$state3 = this.state,
           isGameStarted = _this$state3.isGameStarted,
-          isGameOver = _this$state3.isGameOver;
+          isGameOver = _this$state3.isGameOver,
+          isMobile = _this$state3.isMobile;
       var divStyle = {
         height: "".concat(HEIGHT, "px"),
         width: "".concat(WIDTH, "px")
@@ -32383,15 +32428,48 @@ function (_Component) {
       return _react.default.createElement(_react.default.Fragment, null, !isGameStarted && _react.default.createElement("div", {
         className: "fake-canvas",
         style: divStyle
-      }, _react.default.createElement("h3", null, "Press any arrow key to start the game")), isGameOver && _react.default.createElement("div", {
+      }, _react.default.createElement("h3", null, isMobile ? '' : 'Press any arrow key to start the game')), isGameOver && _react.default.createElement("div", {
         className: "fake-canvas",
         style: divStyle
-      }, _react.default.createElement("h3", null, "GAME OVER"), _react.default.createElement("h4", null, "Press 'r' to restart")), _react.default.createElement("canvas", {
+      }, _react.default.createElement("h3", null, "GAME OVER"), _react.default.createElement("h4", null, isMobile ? '' : 'Press \'r\' to restart')), _react.default.createElement("canvas", {
         className: 'snake-canvas',
         ref: this.canvasRef,
         width: WIDTH,
         height: HEIGHT
-      }));
+      }), isMobile && _react.default.createElement("div", null, _react.default.createElement("div", {
+        className: "touch-control-container"
+      }, _react.default.createElement("div", {
+        className: "touch-controls"
+      }, _react.default.createElement("div", null, _react.default.createElement("button", {
+        className: "touch-button button-left",
+        onClick: function onClick() {
+          return _this5.moveUp();
+        }
+      }, "Up")), _react.default.createElement("div", null, _react.default.createElement("button", {
+        className: "touch-button button-left",
+        onClick: function onClick() {
+          return _this5.moveLeft();
+        }
+      }, "Left"), _react.default.createElement("button", {
+        className: "touch-button"
+      }, "\xA0"), _react.default.createElement("button", {
+        className: "touch-button button-left",
+        onClick: function onClick() {
+          return _this5.moveRight();
+        }
+      }, "Right")), _react.default.createElement("div", null, _react.default.createElement("button", {
+        className: "touch-button button-left",
+        onClick: function onClick() {
+          return _this5.moveDown();
+        }
+      }, "Down")))), _react.default.createElement("div", {
+        className: "bottom-buttons-container"
+      }, _react.default.createElement("button", {
+        className: "restart-button",
+        onClick: function onClick() {
+          return _this5.restart();
+        }
+      }, "Restart"))));
     }
   }]);
 
@@ -32407,6 +32485,12 @@ var _react = _interopRequireWildcard(require("react"));
 var _reactDom = require("react-dom");
 
 require("./index.css");
+
+var _difference = _interopRequireDefault(require("./images/difference.png"));
+
+var _ella = _interopRequireDefault(require("./images/ella1.JPG"));
+
+var _ella2 = _interopRequireDefault(require("./images/ella2.JPG"));
 
 var _index2 = _interopRequireDefault(require("./components/SnakeGame/index.js"));
 
@@ -32440,18 +32524,37 @@ var App = function App() {
 
   return _react.default.createElement("div", {
     className: "page"
-  }, _react.default.createElement("h1", null, "GHOSTS GHOSTS GHOSTS GHOSTS"), _react.default.createElement("p", null, "Some description"), _react.default.createElement("div", {
+  }, _react.default.createElement("h1", null, "GHOSTS GHOSTS GHOSTS GHOSTS"), _react.default.createElement("p", {
+    className: "description"
+  }, "Halloween is BACK from the DEAD for one last SPOOKY spectacular. So keep those turkeys in the closet for one more week and engage in some sCareGiving. When's this party? Whose this party? What's this party? When's this party? Where's this party? There's only one way to find out \u2013 enter the snakehole!"), _react.default.createElement("p", null, "* Sponsored by Sprite Cranberry, Phish, Patrick Swayze, and Ghost (disambiguation)."), _react.default.createElement("div", {
     className: "snake-container"
   }, _react.default.createElement("h2", null, "Score: ", score), _react.default.createElement(_index2.default, {
     setScore: handleScore,
     incrementScore: incrementScore
   })), _react.default.createElement("div", {
     className: "hint-container"
-  }, score < 10 && _react.default.createElement("p", null, "You must score at least 10 points to find out the date"), score >= 10 && score < 20 && _react.default.createElement("p", null, "The event will be held on [TBD]. Score 20 points to find out the time"), score >= 20 && score < 30 && _react.default.createElement("p", null, "The event will start at [TBD]. Score 30 points to...")), _react.default.createElement("h1", null, "Photo Gallery"), _react.default.createElement("p", null, "Here's some spoooky inspiration"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("p", null, "..."));
+  }, score < 10 && _react.default.createElement("p", null, "You're still in the snakehole. Get 10 points and we'll talk."), score >= 10 && score < 20 && _react.default.createElement("p", null, "Blinky: I won\u2019t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time."), score >= 20 && score < 30 && _react.default.createElement("p", null, " Inky: Ghosts dont put much by punctuality - which is lucky for some of you. Get here by 9 for the mango flavored vodka."), score >= 30 && score < 40 && _react.default.createElement("p", null, "Pinky: Depending on how good you are at snake this may have taken a lifetime. Now at death's door, I will tell you the theme: Famous clones and lesser known twins."), score >= 40 && score < 50 && _react.default.createElement("p", null, "Ghost Witch of Netor: the theme is actually ghosts - come on. If you come before 8:30 though we will give you an old fashioned on the house."), score >= 50 && _react.default.createElement("p", null, "Hoewel hij er nog niets over los wilde laten, liet hij ons wel weten dat we op de E3 een grote aankondiging mogen verwachten. Hoewel hij zelf graag nog een zingende Pac-Man zou willen zien, heeft Namco daar nog geen oren naar. Ide\xEBen waar hij zelf niets mee op heeft, zijn een first-person Pac-Man, of een Pac-Man-game met motion control. Iwatani's visie voor de toekomst, of wat hij graag zou zien: games zonder of voorbij de normale display (think Rubik's Cube).")), _react.default.createElement("h1", null, "Photo Gallery"), _react.default.createElement("p", null, "Here's some spoooky inspiration"), _react.default.createElement("div", {
+    className: "gallery"
+  }, _react.default.createElement("img", {
+    className: "gallery-image",
+    style: {
+      transform: "rotate(90deg)"
+    },
+    src: _ella.default,
+    alt: "A group of friends in costume"
+  }), _react.default.createElement("img", {
+    className: "gallery-image",
+    src: _ella2.default,
+    alt: "A group of friends in costume"
+  })), _react.default.createElement("p", null, "(Email Will your photos to add to the gallery)"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("img", {
+    src: _difference.default,
+    alt: "Find the difference image",
+    className: "find-difference"
+  }));
 };
 
 (0, _reactDom.render)(_react.default.createElement(App, null), document.getElementById('root'));
-},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./index.css":"index.css","./components/SnakeGame/index.js":"components/SnakeGame/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./index.css":"index.css","./images/difference.png":"images/difference.png","./images/ella1.JPG":"images/ella1.JPG","./images/ella2.JPG":"images/ella2.JPG","./components/SnakeGame/index.js":"components/SnakeGame/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32479,7 +32582,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54765" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55042" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

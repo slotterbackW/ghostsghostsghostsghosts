@@ -14,6 +14,12 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 1rem;
+  text-align: center;
+}
+
+.description {
+  max-width: 40rem;
 }
 
 .snake-container {
@@ -28,6 +34,19 @@ h1 {
   width: 360px;
 }
 
+.gallery {
+  padding: 2rem;
+}
+
+.gallery-image {
+  padding: 2rem;
+}
+
+.find-difference {
+  width: 100%;
+  max-width: 800px;
+}
+
 .snake-canvas {
   border: 1px solid black;
   background: white;
@@ -40,6 +59,35 @@ h1 {
   justify-content: center;
   align-items: center;
   color: black;
+}
+
+.touch-control-container {
+  position: relative;
+}
+
+.touch-controls {
+  padding: 1rem;
+}
+
+.touch-button {
+  height: 60px;
+  width: 60px;
+  margin: 4px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.bottom-buttons-container {
+  padding: 0 0 1rem 0;
+}
+
+.restart-button {
+  border: 1px solid white;
+  background-color: #E74C3C;
+  color: white;
+  padding: .25rem 1rem;
+  border-radius: 5px;
 }
 
 
