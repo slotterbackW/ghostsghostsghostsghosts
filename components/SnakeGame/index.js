@@ -266,7 +266,7 @@ export default class SnakeGame extends Component {
         {!isGameStarted &&
           <Swipeable config={swipeConfig} onSwipeLeft={() => this.moveLeft()} onSwipeRight={() => this.moveRight()} onSwipeUp={() => this.moveUp()} onSwipeDown={() => this.moveDown()}>
             <div className="fake-canvas" style={divStyle}>
-                <h3>{isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'}</h3>
+                <h3 className="help-text">{isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'}</h3>
             </div>
           </Swipeable>
         }

@@ -38067,7 +38067,9 @@ function (_Component) {
       }, _react.default.createElement("div", {
         className: "fake-canvas",
         style: divStyle
-      }, _react.default.createElement("h3", null, isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'))), isGameOver && _react.default.createElement("div", {
+      }, _react.default.createElement("h3", {
+        className: "help-text"
+      }, isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'))), isGameOver && _react.default.createElement("div", {
         className: "fake-canvas",
         style: divStyle
       }, _react.default.createElement("h3", null, "GAME OVER"), _react.default.createElement("h4", null, isMobile ? '' : 'Press \'r\' to restart')), _react.default.createElement(_reactTouch.Swipeable, {
