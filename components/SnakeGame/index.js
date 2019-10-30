@@ -72,7 +72,6 @@ export default class SnakeGame extends Component {
 
   startGame() {
     const isGameStarted = this.state.isGameStarted
-    console.log("Is game started")
     if (isGameStarted) {
       return;
     }

@@ -37802,7 +37802,6 @@ function (_Component) {
     key: "startGame",
     value: function startGame() {
       var isGameStarted = this.state.isGameStarted;
-      console.log("Is game started");
 
       if (isGameStarted) {
         return;
