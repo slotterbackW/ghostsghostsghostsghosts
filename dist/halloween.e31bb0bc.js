@@ -37758,6 +37758,9 @@ function (_Component) {
       }
 
       document.addEventListener("keydown", this.handleKeyDown);
+      this.canvasRef.current.addEventListener("touchmove", this.preventTouch, {
+        passive: false
+      });
       this.drawCanvas();
     }
   }, {
@@ -37795,8 +37798,16 @@ function (_Component) {
   }, {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
+      this.canvasRef.current.removeEventListener("touchmove", this.preventTouch, {
+        passive: false
+      });
       document.removeEventListener("keydown", this.handleKeyDown);
       clearTimeout(this.timeout);
+    }
+  }, {
+    key: "preventTouch",
+    value: function preventTouch(e) {
+      e.preventDefault();
     }
   }, {
     key: "startGame",

@@ -41,6 +41,7 @@ export default class SnakeGame extends Component {
       this.setState({isMobile: window.innerWidth <= 1024})
     }
     document.addEventListener("keydown", this.handleKeyDown)
+    this.canvasRef.current.addEventListener("touchmove", this.preventTouch, {passive: false})
     this.drawCanvas()
   }
 
@@ -66,8 +67,13 @@ export default class SnakeGame extends Component {
   }
 
   componentWillUnmount() {
+    this.canvasRef.current.removeEventListener("touchmove", this.preventTouch, {passive: false})
     document.removeEventListener("keydown", this.handleKeyDown)
     clearTimeout(this.timeout)
+  }
+
+  preventTouch(e) {
+    e.preventDefault()
   }
 
   startGame() {
