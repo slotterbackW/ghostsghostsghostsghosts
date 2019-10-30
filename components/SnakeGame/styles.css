@@ -16,13 +16,9 @@
   position: relative;
 }
 
-.touch-controls {
-  padding: 1rem;
-}
-
 .touch-button {
-  height: 60px;
-  width: 60px;
+  height: 75px;
+  width: 75px;
   margin: 4px;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -30,7 +26,7 @@
 }
 
 .bottom-buttons-container {
-  padding: 0 0 1rem 0;
+  padding: 1rem 0;
 }
 
 .restart-button {

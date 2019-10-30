@@ -32438,9 +32438,7 @@ function (_Component) {
         height: HEIGHT
       }), isMobile && _react.default.createElement("div", null, _react.default.createElement("div", {
         className: "touch-control-container"
-      }, _react.default.createElement("div", {
-        className: "touch-controls"
-      }, _react.default.createElement("div", null, _react.default.createElement("button", {
+      }, _react.default.createElement("div", null, _react.default.createElement("div", null, _react.default.createElement("button", {
         className: "touch-button button-left",
         onClick: function onClick() {
           return _this5.moveUp();
@@ -32524,7 +32522,9 @@ var App = function App() {
 
   return _react.default.createElement("div", {
     className: "page"
-  }, _react.default.createElement("h1", null, "GHOSTS GHOSTS GHOSTS GHOSTS"), _react.default.createElement("p", {
+  }, _react.default.createElement("h1", {
+    className: "title"
+  }, "GHOSTS GHOSTS GHOSTS GHOSTS"), _react.default.createElement("p", {
     className: "description"
   }, "Halloween is BACK from the DEAD for one last SPOOKY spectacular. So keep those turkeys in the closet for one more week and engage in some sCareGiving. When's this party? Whose this party? What's this party? When's this party? Where's this party? There's only one way to find out \u2013 enter the snakehole!"), _react.default.createElement("p", null, "* Sponsored by Sprite Cranberry, Phish, Patrick Swayze, and Ghost (disambiguation)."), _react.default.createElement("div", {
     className: "snake-container"
@@ -32533,7 +32533,21 @@ var App = function App() {
     incrementScore: incrementScore
   })), _react.default.createElement("div", {
     className: "hint-container"
-  }, score < 10 && _react.default.createElement("p", null, "You're still in the snakehole. Get 10 points and we'll talk."), score >= 10 && score < 20 && _react.default.createElement("p", null, "Blinky: I won\u2019t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time."), score >= 20 && score < 30 && _react.default.createElement("p", null, " Inky: Ghosts dont put much by punctuality - which is lucky for some of you. Get here by 9 for the mango flavored vodka."), score >= 30 && score < 40 && _react.default.createElement("p", null, "Pinky: Depending on how good you are at snake this may have taken a lifetime. Now at death's door, I will tell you the theme: Famous clones and lesser known twins."), score >= 40 && score < 50 && _react.default.createElement("p", null, "Ghost Witch of Netor: the theme is actually ghosts - come on. If you come before 8:30 though we will give you an old fashioned on the house."), score >= 50 && _react.default.createElement("p", null, "Hoewel hij er nog niets over los wilde laten, liet hij ons wel weten dat we op de E3 een grote aankondiging mogen verwachten. Hoewel hij zelf graag nog een zingende Pac-Man zou willen zien, heeft Namco daar nog geen oren naar. Ide\xEBen waar hij zelf niets mee op heeft, zijn een first-person Pac-Man, of een Pac-Man-game met motion control. Iwatani's visie voor de toekomst, of wat hij graag zou zien: games zonder of voorbij de normale display (think Rubik's Cube).")), _react.default.createElement("h1", null, "Photo Gallery"), _react.default.createElement("p", null, "Here's some spoooky inspiration"), _react.default.createElement("div", {
+  }, score < 10 && _react.default.createElement("p", {
+    className: "hint"
+  }, "You're still in the snakehole. Get 10 points and we'll talk."), score >= 10 && score < 20 && _react.default.createElement("p", {
+    className: "hint"
+  }, "Blinky: I won\u2019t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time."), score >= 20 && score < 30 && _react.default.createElement("p", {
+    className: "hint"
+  }, " Inky: Ghosts dont put much by punctuality - which is lucky for some of you. Get here by 9 for the mango flavored vodka."), score >= 30 && score < 40 && _react.default.createElement("p", {
+    className: "hint"
+  }, "Pinky: Depending on how good you are at snake this may have taken a lifetime. Now at death's door, I will tell you the theme: Famous clones and lesser known twins."), score >= 40 && score < 50 && _react.default.createElement("p", {
+    className: "hint"
+  }, "Ghost Witch of Netor: the theme is actually ghosts - come on. If you come before 8:30 though we will give you an old fashioned on the house."), score >= 50 && _react.default.createElement("p", {
+    className: "hint"
+  }, "Hoewel hij er nog niets over los wilde laten, liet hij ons wel weten dat we op de E3 een grote aankondiging mogen verwachten. Hoewel hij zelf graag nog een zingende Pac-Man zou willen zien, heeft Namco daar nog geen oren naar. Ide\xEBen waar hij zelf niets mee op heeft, zijn een first-person Pac-Man, of een Pac-Man-game met motion control. Iwatani's visie voor de toekomst, of wat hij graag zou zien: games zonder of voorbij de normale display (think Rubik's Cube).")), _react.default.createElement("h1", null, "Photo Gallery"), _react.default.createElement("p", {
+    className: "description"
+  }, "Here's some spoooky inspiration"), _react.default.createElement("div", {
     className: "gallery"
   }, _react.default.createElement("img", {
     className: "gallery-image",
@@ -32546,7 +32560,9 @@ var App = function App() {
     className: "gallery-image",
     src: _ella2.default,
     alt: "A group of friends in costume"
-  })), _react.default.createElement("p", null, "(Email Will your photos to add to the gallery)"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("p", null, "Because why not"), _react.default.createElement("img", {
+  })), _react.default.createElement("p", null, "(Email Will your photos to add to the gallery)"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("p", {
+    className: "description"
+  }, "Because why not"), _react.default.createElement("img", {
     src: _difference.default,
     alt: "Find the difference image",
     className: "find-difference"
@@ -32582,7 +32598,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64140" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53848" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -15,7 +15,7 @@ const App = () => {
 
   return (
     <div className="page">
-      <h1>GHOSTS GHOSTS GHOSTS GHOSTS</h1>
+      <h1 className="title">GHOSTS GHOSTS GHOSTS GHOSTS</h1>
       <p className="description">Halloween is BACK from the DEAD for one last SPOOKY spectacular. So keep those turkeys in the closet for one more week and engage in some sCareGiving.
       When's this party? Whose this party? What's this party? When's this party? Where's this party? There's only one way to find out – enter the snakehole!</p>
       <p>* Sponsored by Sprite Cranberry, Phish, Patrick Swayze, and Ghost (disambiguation).</p>
@@ -25,33 +25,33 @@ const App = () => {
       </div>
       <div className="hint-container">
         {score < 10 &&
-          <p>You're still in the snakehole. Get 10 points and we'll talk.</p>
+          <p className="hint">You're still in the snakehole. Get 10 points and we'll talk.</p>
         }
         {score >= 10 && score < 20 &&
-          <p>Blinky: I won’t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time.</p>
+          <p className="hint">Blinky: I won’t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time.</p>
         }
         {score >= 20 && score < 30 &&
-          <p> Inky: Ghosts dont put much by punctuality - which is lucky for some of you. Get here by 9 for the mango flavored vodka.</p>
+          <p className="hint"> Inky: Ghosts dont put much by punctuality - which is lucky for some of you. Get here by 9 for the mango flavored vodka.</p>
         }
         {score >= 30 && score < 40 &&
-          <p>Pinky: Depending on how good you are at snake this may have taken a lifetime. Now at death's door, I will tell you the theme: Famous clones and lesser known twins.</p>
+          <p className="hint">Pinky: Depending on how good you are at snake this may have taken a lifetime. Now at death's door, I will tell you the theme: Famous clones and lesser known twins.</p>
         }
         {score >= 40 && score < 50 &&
-          <p>Ghost Witch of Netor: the theme is actually ghosts - come on. If you come before 8:30 though we will give you an old fashioned on the house.</p>
+          <p className="hint">Ghost Witch of Netor: the theme is actually ghosts - come on. If you come before 8:30 though we will give you an old fashioned on the house.</p>
         }
         {score >= 50 &&
-          <p>Hoewel hij er nog niets over los wilde laten, liet hij ons wel weten dat we op de E3 een grote aankondiging mogen verwachten. Hoewel hij zelf graag nog een zingende Pac-Man zou willen zien, heeft Namco daar nog geen oren naar. Ideëen waar hij zelf niets mee op heeft, zijn een first-person Pac-Man, of een Pac-Man-game met motion control. Iwatani's visie voor de toekomst, of wat hij graag zou zien: games zonder of voorbij de normale display (think Rubik's Cube).</p>
+          <p className="hint">Hoewel hij er nog niets over los wilde laten, liet hij ons wel weten dat we op de E3 een grote aankondiging mogen verwachten. Hoewel hij zelf graag nog een zingende Pac-Man zou willen zien, heeft Namco daar nog geen oren naar. Ideëen waar hij zelf niets mee op heeft, zijn een first-person Pac-Man, of een Pac-Man-game met motion control. Iwatani's visie voor de toekomst, of wat hij graag zou zien: games zonder of voorbij de normale display (think Rubik's Cube).</p>
         }
       </div>
       <h1>Photo Gallery</h1>
-      <p>Here's some spoooky inspiration</p>
+      <p className="description">Here's some spoooky inspiration</p>
       <div className="gallery">
         <img className="gallery-image" style={{transform: "rotate(90deg)"}} src={Ella1} alt="A group of friends in costume"/>
         <img className="gallery-image" src={Ella2} alt="A group of friends in costume"/>
       </div>
       <p>(Email Will your photos to add to the gallery)</p>
       <h1>Find the difference</h1>
-      <p>Because why not</p>
+      <p className="description">Because why not</p>
       <img src={FindDifference} alt="Find the difference image" className="find-difference"/>
     </div>
   )

@@ -264,7 +264,7 @@ export default class SnakeGame extends Component {
         {isMobile &&
           <div>
             <div className="touch-control-container">
-              <div className="touch-controls">
+              <div>
                 <div>
                   <button className="touch-button button-left" onClick={() => this.moveUp()}>Up</button>
                 </div>

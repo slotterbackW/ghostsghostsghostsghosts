@@ -5,9 +5,14 @@ body {
 }
 
 h1 {
-  font-size: 3.5rem;
+  font-size: 5rem;
   font-family: 'Creepster', cursive;
   color: #E74C3C;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 6rem;
 }
 
 .page {
@@ -19,6 +24,7 @@ h1 {
 }
 
 .description {
+  font-size: 20px;
   max-width: 40rem;
 }
 
@@ -32,6 +38,11 @@ h1 {
   justify-content: center;
   align-items: center;
   width: 360px;
+}
+
+.hint {
+  padding: 1rem;
+  margin: 0;
 }
 
 .gallery {
@@ -65,13 +76,9 @@ h1 {
   position: relative;
 }
 
-.touch-controls {
-  padding: 1rem;
-}
-
 .touch-button {
-  height: 60px;
-  width: 60px;
+  height: 75px;
+  width: 75px;
   margin: 4px;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -79,7 +86,7 @@ h1 {
 }
 
 .bottom-buttons-container {
-  padding: 0 0 1rem 0;
+  padding: 1rem 0;
 }
 
 .restart-button {
