@@ -51,6 +51,7 @@ const App = () => {
       </div>
       <p>(Email Will your photos to add to the gallery)</p>
       <h1>Find the difference</h1>
+      <p>Because why not</p>
       <img src={FindDifference} alt="Find the difference image" className="find-difference"/>
     </div>
   )

@@ -32546,7 +32546,7 @@ var App = function App() {
     className: "gallery-image",
     src: _ella2.default,
     alt: "A group of friends in costume"
-  })), _react.default.createElement("p", null, "(Email Will your photos to add to the gallery)"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("img", {
+  })), _react.default.createElement("p", null, "(Email Will your photos to add to the gallery)"), _react.default.createElement("h1", null, "Find the difference"), _react.default.createElement("p", null, "Because why not"), _react.default.createElement("img", {
     src: _difference.default,
     alt: "Find the difference image",
     className: "find-difference"
@@ -32582,7 +32582,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55042" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64140" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
