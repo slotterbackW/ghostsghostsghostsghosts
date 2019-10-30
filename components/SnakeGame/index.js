@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
+import { defineSwipe, Swipeable } from 'react-touch'
 
 import './styles.css'
 
@@ -69,7 +70,17 @@ export default class SnakeGame extends Component {
     clearTimeout(this.timeout)
   }
 
+  startGame() {
+    const isGameStarted = this.state.isGameStarted
+    console.log("Is game started")
+    if (isGameStarted) {
+      return;
+    }
+    //this.setState({isGameStarted: true})
+  }
+
   moveUp() {
+    this.startGame()
     const direction = this.state.direction
     if (direction !== DIRECTIONS.DOWN) {
       this.setState({direction: DIRECTIONS.UP})
@@ -77,6 +88,7 @@ export default class SnakeGame extends Component {
   }
 
   moveDown() {
+    this.startGame()
     const direction = this.state.direction
     if (direction !== DIRECTIONS.UP) {
       this.setState({direction: DIRECTIONS.DOWN})
@@ -84,6 +96,7 @@ export default class SnakeGame extends Component {
   }
 
   moveRight() {
+    this.startGame()
     const direction = this.state.direction
     if (direction !== DIRECTIONS.LEFT) {
       this.setState({direction: DIRECTIONS.RIGHT})
@@ -91,6 +104,7 @@ export default class SnakeGame extends Component {
   }
 
   moveLeft() {
+    this.startGame()
     const direction = this.state.direction
     if (direction !== DIRECTIONS.RIGHT) {
       this.setState({direction: DIRECTIONS.LEFT})
@@ -246,12 +260,13 @@ export default class SnakeGame extends Component {
       height: `${HEIGHT}px`,
       width: `${WIDTH}px`
     }
+    const swipeConfig = defineSwipe({swipeDistance: 50});
 
     return (
       <>
         {!isGameStarted &&
           <div className="fake-canvas" style={divStyle}>
-            <h3>{isMobile ? '' : 'Press any arrow key to start the game'}</h3>
+            <h3>{isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'}</h3>
           </div>
         }
         {isGameOver &&
@@ -260,29 +275,9 @@ export default class SnakeGame extends Component {
             <h4>{isMobile ? '' : 'Press \'r\' to restart'}</h4>
           </div>
         }
-        <canvas className={'snake-canvas'} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
-        {isMobile &&
-          <div>
-            <div className="touch-control-container">
-              <div>
-                <div>
-                  <button className="touch-button button-left" onClick={() => this.moveUp()}>Up</button>
-                </div>
-                <div>
-                  <button className="touch-button button-left" onClick={() => this.moveLeft()}>Left</button>
-                  <button className="touch-button">&nbsp;</button>
-                  <button className="touch-button button-left" onClick={() => this.moveRight()}>Right</button>
-                </div>
-                <div>
-                <button className="touch-button button-left" onClick={() => this.moveDown()}>Down</button>
-                </div>
-              </div>
-            </div>
-            <div className="bottom-buttons-container">
-              <button className="restart-button" onClick={() => this.restart()}>Restart</button>
-            </div>
-          </div>
-        }
+        <Swipeable config={swipeConfig} onSwipeLeft={() => this.moveLeft()} onSwipeRight={() => this.moveRight()} onSwipeUp={() => this.moveUp()} onSwipeDown={() => this.moveDown()}>
+          <canvas className={'snake-canvas'} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
+        </Swipeable>
       </>
     )
   }

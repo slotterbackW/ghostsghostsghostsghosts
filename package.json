@@ -5,7 +5,8 @@
   },
   "dependencies": {
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-dom": "^16.10.2",
+    "react-touch": "^0.4.4"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4"
