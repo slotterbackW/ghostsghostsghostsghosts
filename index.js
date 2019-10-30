@@ -24,8 +24,11 @@ const App = () => {
         <SnakeGame setScore={handleScore} incrementScore={incrementScore} />
       </div>
       <div className="hint-container">
-        {score < 10 &&
-          <p className="hint">You're still in the snakehole. Get 10 points and we'll talk.</p>
+        {score < 5 &&
+          <p className="hint">You're still in the snakehole. Get 5 points and we'll talk.</p>
+        }
+        {score >= 5 && score < 10 &&
+          <p className="hint">Clyde: Orange you glad you made it this far? Clear your calendar for this Saturday (the 2nd).</p>
         }
         {score >= 10 && score < 20 &&
           <p className="hint">Blinky: I won’t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time.</p>

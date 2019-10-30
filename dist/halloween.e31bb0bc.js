@@ -38175,9 +38175,11 @@ var App = function App() {
     incrementScore: incrementScore
   })), _react.default.createElement("div", {
     className: "hint-container"
-  }, score < 10 && _react.default.createElement("p", {
+  }, score < 5 && _react.default.createElement("p", {
     className: "hint"
-  }, "You're still in the snakehole. Get 10 points and we'll talk."), score >= 10 && score < 20 && _react.default.createElement("p", {
+  }, "You're still in the snakehole. Get 5 points and we'll talk."), score >= 5 && score < 10 && _react.default.createElement("p", {
+    className: "hint"
+  }, "Clyde: Orange you glad you made it this far? Clear your calendar for this Saturday (the 2nd)."), score >= 10 && score < 20 && _react.default.createElement("p", {
     className: "hint"
   }, "Blinky: I won\u2019t leave you on red. This ones the low hanging fruit though. Float through 886 26th Avenue for a chilling good time."), score >= 20 && score < 30 && _react.default.createElement("p", {
     className: "hint"
