@@ -76,7 +76,7 @@ export default class SnakeGame extends Component {
     if (isGameStarted) {
       return;
     }
-    //this.setState({isGameStarted: true})
+    this.setState({isGameStarted: true})
   }
 
   moveUp() {
@@ -265,9 +265,11 @@ export default class SnakeGame extends Component {
     return (
       <>
         {!isGameStarted &&
-          <div className="fake-canvas" style={divStyle}>
-            <h3>{isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'}</h3>
-          </div>
+          <Swipeable config={swipeConfig} onSwipeLeft={() => this.moveLeft()} onSwipeRight={() => this.moveRight()} onSwipeUp={() => this.moveUp()} onSwipeDown={() => this.moveDown()}>
+            <div className="fake-canvas" style={divStyle}>
+                <h3>{isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'}</h3>
+            </div>
+          </Swipeable>
         }
         {isGameOver &&
           <div className="fake-canvas" style={divStyle}>
@@ -278,6 +280,11 @@ export default class SnakeGame extends Component {
         <Swipeable config={swipeConfig} onSwipeLeft={() => this.moveLeft()} onSwipeRight={() => this.moveRight()} onSwipeUp={() => this.moveUp()} onSwipeDown={() => this.moveDown()}>
           <canvas className={'snake-canvas'} ref={this.canvasRef} width={WIDTH} height={HEIGHT}></canvas>
         </Swipeable>
+        {isMobile &&
+          <div className="bottom-buttons-container">
+            <button onClick={() => this.restart()} className="restart-button">Restart</button>
+          </div>
+        }
       </>
     )
   }

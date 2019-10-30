@@ -37806,8 +37806,11 @@ function (_Component) {
 
       if (isGameStarted) {
         return;
-      } //this.setState({isGameStarted: true})
+      }
 
+      this.setState({
+        isGameStarted: true
+      });
     }
   }, {
     key: "moveUp",
@@ -38048,10 +38051,24 @@ function (_Component) {
       var swipeConfig = (0, _reactTouch.defineSwipe)({
         swipeDistance: 50
       });
-      return _react.default.createElement(_react.default.Fragment, null, !isGameStarted && _react.default.createElement("div", {
+      return _react.default.createElement(_react.default.Fragment, null, !isGameStarted && _react.default.createElement(_reactTouch.Swipeable, {
+        config: swipeConfig,
+        onSwipeLeft: function onSwipeLeft() {
+          return _this5.moveLeft();
+        },
+        onSwipeRight: function onSwipeRight() {
+          return _this5.moveRight();
+        },
+        onSwipeUp: function onSwipeUp() {
+          return _this5.moveUp();
+        },
+        onSwipeDown: function onSwipeDown() {
+          return _this5.moveDown();
+        }
+      }, _react.default.createElement("div", {
         className: "fake-canvas",
         style: divStyle
-      }, _react.default.createElement("h3", null, isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game')), isGameOver && _react.default.createElement("div", {
+      }, _react.default.createElement("h3", null, isMobile ? 'Swipe in any direction to start the game' : 'Press any arrow key to start the game'))), isGameOver && _react.default.createElement("div", {
         className: "fake-canvas",
         style: divStyle
       }, _react.default.createElement("h3", null, "GAME OVER"), _react.default.createElement("h4", null, isMobile ? '' : 'Press \'r\' to restart')), _react.default.createElement(_reactTouch.Swipeable, {
@@ -38073,7 +38090,14 @@ function (_Component) {
         ref: this.canvasRef,
         width: WIDTH,
         height: HEIGHT
-      })));
+      })), isMobile && _react.default.createElement("div", {
+        className: "bottom-buttons-container"
+      }, _react.default.createElement("button", {
+        onClick: function onClick() {
+          return _this5.restart();
+        },
+        className: "restart-button"
+      }, "Restart")));
     }
   }]);
 
